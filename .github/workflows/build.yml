@@ -1,0 +1,74 @@
+name: Build
+on:
+  push:
+    tags:
+      - '1.*.*'
+    paths-ignore:
+      - '.github/workflows/x-*.yml'
+  workflow_dispatch: # manually-triggered runs
+
+permissions:
+  # allowed to create releases (ref. https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs)
+  contents: write
+
+concurrency:
+  # cancel pending runs when a PR gets updated (ref. https://github.com/rust-lang/rust/blob/75fd074338801fba74a8cf7f8c48c5c5be362d08/.github/workflows/ci.yml#L35)
+  group: ${{ github.head_ref || github.run_id }}-${{ github.actor }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    name: Build
+    runs-on: macos-14
+
+    env: # use tag version, if available, falling back to 1.7.18 (stable)
+      CJSON_VERSION: "${{ startsWith(github.ref, 'refs/tags/1.') && github.ref_name || '1.7.18' }}"
+      PUBLISH_RELEASE: "${{ startsWith(github.ref, 'refs/tags/1.') && '1' || '0' }}"
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4
+
+    - name: build
+      run: scripts/build.sh
+
+    - name: publish native libraries
+      uses: actions/upload-artifact@v4
+      with:
+        name: "cjson-${{ env.CJSON_VERSION }}"
+        retention-days: 5
+        if-no-files-found: "error"
+        path: |
+          build/cjson-build-${{ env.CJSON_VERSION }}/iphoneos/**
+          build/cjson-build-${{ env.CJSON_VERSION }}/iphonesimulator/**
+          build/cjson-build-${{ env.CJSON_VERSION }}/macosx/**
+
+    - name: publish xcframework
+      uses: actions/upload-artifact@v4
+      with:
+        name: "cjson-${{ env.CJSON_VERSION }}.xcframework"
+        retention-days: 5
+        if-no-files-found: "error"
+        path: |
+          build/cjson-build-${{ env.CJSON_VERSION }}/cJSON.xcframework
+
+    - name: pack release artifacts
+      if: "success() && env.PUBLISH_RELEASE == '1'"
+      run: scripts/release.sh
+
+    - name: create release
+      if: "success() && env.PUBLISH_RELEASE == '1'"
+      uses: softprops/action-gh-release@v2
+      with:
+        name: "${{ env.CJSON_VERSION }}"
+        draft: true
+        prerelease: false
+        generate_release_notes: false
+        fail_on_unmatched_files: true
+        files: |
+          build/cjson-build-${{ env.CJSON_VERSION }}/cjson.tar.gz
+          build/cjson-build-${{ env.CJSON_VERSION }}/cJSON.xcframework.tar.gz
