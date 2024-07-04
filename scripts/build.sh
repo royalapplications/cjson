@@ -73,7 +73,8 @@ copy_output() {
   cp "libcjson.a" "${target_dir}/lib"
 
   mkdir "${target_dir}/include"
-  cp "${SRC_DIR}/cJSON.h" "${target_dir}/include"
+  mkdir "${target_dir}/include/cjson"
+  cp "${SRC_DIR}/cJSON.h" "${target_dir}/include/cjson"
 }
 
 build_macos() {
