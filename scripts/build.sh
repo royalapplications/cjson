@@ -91,7 +91,8 @@ build_macos() {
     -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
     -DCMAKE_SYSROOT="${sdk_root}" \
     -DCMAKE_SYSTEM_NAME="Darwin" \
-    -DCMAKE_C_FLAGS="${additional_c_flags}"
+    -DCMAKE_C_FLAGS="${additional_c_flags}" \
+    -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
   make
 
@@ -113,7 +114,8 @@ build_ios() {
     -DBUILD_SHARED_LIBS=Off \
     -DCMAKE_SYSROOT="${sdk_root}" \
     -DCMAKE_SYSTEM_NAME="iOS" \
-    -DCMAKE_C_FLAGS="${additional_c_flags}"
+    -DCMAKE_C_FLAGS="${additional_c_flags}" \
+    -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
   make
 
@@ -136,7 +138,8 @@ build_ios_sim() {
     -DCMAKE_SYSROOT="${sdk_root}" \
     -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
     -DCMAKE_SYSTEM_NAME="iOS" \
-    -DCMAKE_C_FLAGS="${additional_c_flags}"
+    -DCMAKE_C_FLAGS="${additional_c_flags}" \
+    -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
   make
 
