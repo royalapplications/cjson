@@ -2,7 +2,7 @@
 
 set -e
 
-CJSON_VERSION_STABLE="1.7.18" # https://github.com/DaveGamble/cJSON/releases
+CJSON_VERSION_STABLE="1.7.19" # https://github.com/DaveGamble/cJSON/releases
 IOS_VERSION_MIN="13.4"
 MACOS_VERSION_MIN="11.0"
 CODESIGN_ID="-"
