@@ -19,17 +19,20 @@ if [[ -z $CJSON_VERSION ]]; then
   CJSON_VERSION="${CJSON_VERSION_STABLE}"
 fi
 
-if [[ ! -f "${BUILD_ROOT_DIR}/v${CJSON_VERSION}.tar.gz" ]]; then
-  echo "Downloading v${CJSON_VERSION}.tar.gz"
-  curl -fL "https://github.com/DaveGamble/cJSON/archive/refs/tags/v${CJSON_VERSION}.tar.gz" -o "${BUILD_ROOT_DIR}/v${CJSON_VERSION}.tar.gz"
+CJSON_VERSION_FULL="${CJSON_VERSION}"
+CJSON_VERSION_DOWNLOAD="${CJSON_VERSION_FULL%%-*}"
+
+if [[ ! -f "${BUILD_ROOT_DIR}/v${CJSON_VERSION_DOWNLOAD}.tar.gz" ]]; then
+  echo "Downloading v${CJSON_VERSION_DOWNLOAD}.tar.gz"
+  curl -fL "https://github.com/DaveGamble/cJSON/archive/refs/tags/v${CJSON_VERSION_DOWNLOAD}.tar.gz" -o "${BUILD_ROOT_DIR}/v${CJSON_VERSION_DOWNLOAD}.tar.gz"
 fi
 
-SRC_DIR="${BUILD_ROOT_DIR}/cjson-src-${CJSON_VERSION}"
-BUILD_DIR="${BUILD_ROOT_DIR}/cjson-build-${CJSON_VERSION}"
+SRC_DIR="${BUILD_ROOT_DIR}/cjson-src-${CJSON_VERSION_DOWNLOAD}"
+BUILD_DIR="${BUILD_ROOT_DIR}/cjson-build-${CJSON_VERSION_FULL}"
 
 if [[ ! -d "${SRC_DIR}" ]]; then
   mkdir -p "${SRC_DIR}"
-  tar xzf "${BUILD_ROOT_DIR}/v${CJSON_VERSION}.tar.gz" -C "${SRC_DIR}" --strip-components=1
+  tar xzf "${BUILD_ROOT_DIR}/v${CJSON_VERSION_DOWNLOAD}.tar.gz" -C "${SRC_DIR}" --strip-components=1
 fi
 
 if [[ -d "${BUILD_DIR}" ]]; then
