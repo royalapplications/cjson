@@ -1,0 +1,8 @@
+add_library(cjson STATIC IMPORTED)
+
+set_target_properties(cjson PROPERTIES
+  IMPORTED_LOCATION "${CMAKE_CURRENT_LIST_DIR}/lib/libcjson.a"
+  INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}/include"
+)
+
+set(cJSON_FOUND TRUE)

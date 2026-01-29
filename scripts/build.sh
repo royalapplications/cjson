@@ -75,6 +75,8 @@ copy_output() {
   mkdir "${target_dir}/include"
   mkdir "${target_dir}/include/cjson"
   cp "${SRC_DIR}/cJSON.h" "${target_dir}/include/cjson"
+
+  cp "${SCRIPT_PATH}/cJSONConfig.cmake" "${target_dir}"
 }
 
 build_macos() {
